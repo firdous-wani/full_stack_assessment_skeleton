@@ -303,7 +303,33 @@ By following these steps, I achieved a normalized database structure where:
 
 ### solution
 
-> explain briefly your solution for this problem here
+### Technology Stack
+- Node.js with Express framework
+- Prisma ORM for database interactions
+- TypeScript for type safety
+
+### API Endpoints Implemented
+
+1. **GET /user/find-all**
+   - Returns all users from the database
+   - Implemented in `userController.ts` and `userService.ts`
+
+2. **GET /home/find-by-user**
+   - Returns homes related to a specific user
+   - Query parameter: `user_id`
+   - Implemented in `homeController.ts` and `homeService.ts`
+
+3. **GET /user/find-by-home**
+   - Returns users interested in a specific home
+   - Query parameter: `home_id`
+   - Implemented in `userController.ts` and `userService.ts`
+
+4. **PUT /home/update-users**
+   - Updates users associated with a home
+   - Request body: `{ home_id: number, user_ids: number[] }`
+   - Idempotent operation using Prisma transactions
+   - Implemented in `homeController.ts` and `homeService.ts`
+
 
 ## Submission Guidelines
 
