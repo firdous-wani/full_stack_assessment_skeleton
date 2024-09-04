@@ -127,9 +127,31 @@ docker-compose -f docker-compose.initial.yml up --build -d
   - so you must **NOT** use Entity first development, where you write your ORM entities and generate SQL migration scripts
   - instead you directly write SQL script, that makes all the changes you want to the DB
 
-### solution
+### Solution
 
-> explain briefly your solution for this problem here
+To address the problem of normalizing the data in the database, I followed these steps:
+
+1. **Drop Existing Tables**:
+   - I started by removing the existing tables `user_home_interest`, `home`, and `user` if they existed. This allowed me to create a fresh schema without any conflicts or leftover data.
+
+2. **Create Normalized Tables**:
+   - **`user` Table**: I created a new table called `user` to store user information. This table has two attributes: `username` and `email`. I used `user_id` as the primary key to uniquely identify each user.
+   - **`home` Table**: I created another table called `home` to store information about homes. This includes attributes such as `street_address`, `state`, `zip`, `sqft`, `beds`, `baths`, and `list_price`. `home_id` serves as the primary key for this table.
+   - **`user_home_interest` Table**: To represent the many-to-many relationship between users and homes, I created a table named `user_home_interest`. This table uses two foreign keys: `user_id` and `home_id`, which reference the `user` and `home` tables respectively. This setup allows me to track which users are interested in which homes.
+
+3. **Migrate Data**:
+   - **Insert Users**: I extracted unique users from the original `user_home` table and inserted them into the `user` table. This ensured that each user is only listed once in the `user` table.
+   - **Insert Homes**: Similarly, I extracted unique home details from the `user_home` table and inserted them into the `home` table, avoiding duplicate entries.
+   - **Insert User-Home Interests**: I linked users and homes in the `user_home_interest` table by matching `username` and `street_address` from the `user_home` table with `user_id` and `home_id` in their respective tables. This established the many-to-many relationships between users and homes.
+
+4. **Drop Obsolete Table**:
+   - After migrating the data, I dropped the original `user_home` table as it was no longer needed.
+
+By following these steps, I achieved a normalized database structure where:
+- User information is stored in the `user` table.
+- Home details are stored in the `home` table.
+- The relationship between users and homes is managed in the `user_home_interest` table, which ensures data integrity and avoids redundancy.
+
 
 ## 2. React SPA
 
